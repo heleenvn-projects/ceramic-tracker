@@ -523,12 +523,16 @@ function renderDetail(id){
   const hero=document.getElementById('detailHero');
   hero.querySelectorAll('img,.tile-placeholder').forEach(e=>e.remove());
   if(w.photo){
-    const img=document.createElement('img');img.src=w.photo;img.alt=w.name||'';
+    const img=document.createElement('img');
+    img.src=w.photo;img.alt=w.name||'';
+    // Must be position:absolute so it fills the fixed-height hero without pushing body down
+    img.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;';
     hero.insertBefore(img,hero.firstChild);
   } else {
     const ph=document.createElement('div');
     ph.className='tile-placeholder';
-    ph.style.cssText='width:100%;height:100%;min-height:300px;';
+    // No inline height override — let the CSS .detail-hero height rule control it
+    ph.style.cssText='position:absolute;inset:0;';
     ph.innerHTML=ceramicSVG(64);
     hero.insertBefore(ph,hero.firstChild);
   }
