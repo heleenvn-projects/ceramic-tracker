@@ -38,40 +38,67 @@
   --safe-top:env(safe-area-inset-top,44px);
   --safe-bot:env(safe-area-inset-bottom,34px);
   --font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --trans:280ms cubic-bezier(.32,.72,0,1);
 }
 html,body{height:100%;background:var(--bg);font-family:var(--font);color:var(--t1);overflow:hidden}
-.screen{position:absolute;inset:0;display:none;flex-direction:column;background:var(--bg);overflow:hidden}
-.screen.active{display:flex}
+
+/* ── Screen transitions ── */
+.screen{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  background:var(--bg);overflow:hidden;
+  transform:translateX(100%);
+  transition:transform var(--trans);
+  pointer-events:none;
+}
+.screen.active{transform:translateX(0);pointer-events:all}
+.screen.prev{transform:translateX(-28%)}
+
+/* ── Nav ── */
 .nav-bar{padding-top:calc(var(--safe-top) + 4px);padding-bottom:12px;padding-left:20px;padding-right:20px;display:flex;align-items:center;justify-content:space-between;background:var(--bg);border-bottom:1px solid var(--div);flex-shrink:0}
 .nav-title{font-size:17px;font-weight:600;color:var(--t1);letter-spacing:-.2px}
-.nav-btn{background:none;border:none;cursor:pointer;color:var(--accent);font-size:15px;font-weight:500;font-family:var(--font);padding:4px 0;min-width:44px;display:flex;align-items:center;gap:5px}
+.nav-btn{background:none;border:none;cursor:pointer;color:var(--accent);font-size:15px;font-weight:500;font-family:var(--font);padding:4px 0;min-width:44px;min-height:44px;display:flex;align-items:center;gap:5px}
 .nav-btn svg{width:18px;height:18px;flex-shrink:0}
-.nav-icon-btn{width:36px;height:36px;border-radius:50%;background:var(--elevated);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
+/* FIX H1: settings icon 44×44 touch target */
+.nav-icon-btn{width:44px;height:44px;border-radius:50%;background:var(--elevated);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .nav-icon-btn svg{width:18px;height:18px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── Scroll body ── */
 .scroll-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--safe-bot) + 80px)}
+
+/* ── Filter chips ── */
 .filter-wrap{display:flex;gap:8px;padding:16px 20px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex-shrink:0}
 .filter-wrap::-webkit-scrollbar{display:none}
 .chip{background:var(--card);border:1px solid var(--div);border-radius:20px;padding:7px 14px;font-size:13px;font-weight:500;color:var(--t2);white-space:nowrap;cursor:pointer;flex-shrink:0;transition:all .15s}
 .chip.active{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+
+/* ── Grid ── */
 .photo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;padding:3px 3px 0}
 .grid-tile{position:relative;cursor:pointer;overflow:hidden;background:var(--elevated);border-radius:var(--r-sm);aspect-ratio:1}
 .grid-tile:nth-child(4n+1){grid-column:span 2;aspect-ratio:2/1}
 .grid-tile img{width:100%;height:100%;object-fit:cover;display:block}
 .tile-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--elevated)}
-.tile-overlay{position:absolute;bottom:0;left:0;right:0;padding:20px 12px 10px;background:linear-gradient(transparent,rgba(0,0,0,.65))}
-.tile-name{font-size:12px;font-weight:500;color:#fff}
-.tile-sub{font-size:10px;color:rgba(255,255,255,.65);margin-top:2px}
+.tile-overlay{position:absolute;bottom:0;left:0;right:0;padding:24px 12px 10px;background:linear-gradient(transparent,rgba(0,0,0,.75))}
+/* FIX H8: tile text contrast — 12px min, high opacity */
+.tile-name{font-size:12px;font-weight:600;color:#fff}
+.tile-sub{font-size:12px;color:rgba(255,255,255,.88);margin-top:2px}
+
+/* ── Empty state ── */
 .empty-state{display:flex;flex-direction:column;align-items:center;padding:80px 40px;gap:14px;text-align:center}
 .empty-state svg{width:48px;height:48px;stroke:var(--t3);fill:none;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round}
 .empty-title{font-size:17px;font-weight:500;color:var(--t2)}
 .empty-sub{font-size:14px;color:var(--t3);line-height:1.6}
+
+/* ── FAB ── */
 .fab{position:fixed;bottom:calc(var(--safe-bot) + 20px);right:20px;width:56px;height:56px;border-radius:50%;background:var(--accent);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(196,149,106,.35);z-index:10;transition:transform .1s}
 .fab:active{transform:scale(.94)}
 .fab svg{width:24px;height:24px;stroke:var(--bg);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── Detail ── */
 .detail-hero{width:100%;padding-top:calc(var(--safe-top));background:var(--elevated);position:relative;flex-shrink:0;min-height:300px;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .detail-hero img{width:100%;min-height:300px;object-fit:cover;display:block}
 .hero-actions{position:absolute;top:calc(var(--safe-top) + 8px);left:16px;right:16px;display:flex;justify-content:space-between}
-.hero-btn{width:38px;height:38px;border-radius:50%;background:rgba(17,16,9,.72);backdrop-filter:blur(10px);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
+/* FIX HIG: hero buttons 44×44 */
+.hero-btn{width:44px;height:44px;border-radius:50%;background:rgba(17,16,9,.72);backdrop-filter:blur(10px);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .hero-btn svg{width:18px;height:18px;stroke:var(--t1);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .detail-body{padding:24px 20px;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--safe-bot)+40px)}
 .detail-name{font-size:24px;font-weight:600;color:var(--t1);letter-spacing:-.3px;margin-bottom:4px}
@@ -79,12 +106,16 @@ html,body{height:100%;background:var(--bg);font-family:var(--font);color:var(--t
 .tags-section{margin-bottom:28px}
 .section-label{font-size:11px;font-weight:600;color:var(--t3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:12px}
 .tags-row{display:flex;flex-wrap:wrap;gap:8px}
-.tag-pill{background:var(--accent-bg);border:1px solid rgba(196,149,106,.2);border-radius:20px;padding:7px 14px;font-size:13px;font-weight:500;color:var(--accent)}
+/* FIX: tag pills tappable → filter overview */
+.tag-pill{background:var(--accent-bg);border:1px solid rgba(196,149,106,.2);border-radius:20px;padding:7px 14px;font-size:13px;font-weight:500;color:var(--accent);cursor:pointer;transition:background .15s}
+.tag-pill:active{background:rgba(196,149,106,.25)}
 .fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px}
 .field-key{font-size:11px;font-weight:600;color:var(--t3);letter-spacing:.05em;text-transform:uppercase;margin-bottom:5px}
 .field-val{font-size:15px;font-weight:500;color:var(--t1)}
 .notes-box{background:var(--card);border:1px solid var(--div);border-radius:var(--r);padding:16px;font-size:14px;line-height:1.65;color:var(--t2)}
 .delete-btn{margin-top:36px;width:100%;padding:15px;background:var(--danger-bg);border:1px solid rgba(212,97,78,.2);border-radius:var(--r);font-size:15px;font-weight:500;color:var(--danger);font-family:var(--font);cursor:pointer}
+
+/* ── Form ── */
 .form-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px 20px 0}
 .form-section{margin-bottom:28px}
 .form-label{font-size:11px;font-weight:600;color:var(--t3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:12px}
@@ -94,6 +125,8 @@ html,body{height:100%;background:var(--bg);font-family:var(--font);color:var(--t
 .photo-upload-sub{font-size:12px;color:var(--t3)}
 .photo-btns{display:flex;gap:10px;margin-top:10px;position:relative;z-index:1}
 .photo-btn{background:var(--elevated);border:1px solid var(--div);border-radius:var(--r-sm);padding:9px 16px;font-size:13px;font-weight:500;color:var(--t2);font-family:var(--font);cursor:pointer}
+/* FIX: add remove-photo link */
+.remove-photo-btn{background:none;border:none;color:var(--danger);font-size:12px;font-family:var(--font);cursor:pointer;padding:4px 0;position:relative;z-index:1}
 input[type=file]{display:none}
 .tag-selector{display:flex;flex-wrap:wrap;gap:8px}
 .tag-opt{background:var(--card);border:1.5px solid var(--div);border-radius:20px;padding:9px 16px;font-size:14px;font-weight:500;color:var(--t2);cursor:pointer;transition:all .15s}
@@ -105,28 +138,37 @@ input[type=file]{display:none}
 .text-input::placeholder{color:var(--t3)}
 textarea.text-input{resize:none;height:100px;line-height:1.55}
 .input-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* FIX HIG: keyboard avoidance — footer uses padding-bottom with safe area */
 .form-footer{padding:12px 20px calc(var(--safe-bot) + 12px);background:var(--bg);border-top:1px solid var(--div);flex-shrink:0}
 .save-btn{width:100%;padding:15px;background:var(--accent);border:none;border-radius:var(--r-lg);font-size:16px;font-weight:600;color:var(--bg);font-family:var(--font);cursor:pointer;transition:opacity .15s}
 .save-btn:active{opacity:.85}
+
+/* ── Settings ── */
 .settings-section{padding:20px 20px 0}
 .settings-card{background:var(--card);border:1px solid var(--div);border-radius:var(--r-lg);overflow:hidden;margin-bottom:16px}
-.settings-row{display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid var(--div);cursor:pointer}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid var(--div);cursor:pointer;min-height:56px}
 .settings-row:last-child{border-bottom:none}
 .settings-row-left{display:flex;flex-direction:column;gap:3px}
 .settings-row-title{font-size:15px;font-weight:500;color:var(--t1)}
 .settings-row-sub{font-size:12px;color:var(--t3)}
 .settings-row-right svg{width:16px;height:16px;stroke:var(--t3);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.cat-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--elevated);border-bottom:1px solid var(--div)}
+.cat-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--elevated);border-bottom:1px solid var(--div)}
 .cat-header-name{font-size:12px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.07em}
-.icon-btn-sm{width:30px;height:30px;border-radius:50%;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.icon-btn-sm svg{width:15px;height:15px;stroke:var(--accent);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.tag-settings-row{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--div)}
+/* FIX H4+HIG: category buttons labeled, 44×44 touch target */
+.cat-btn-group{display:flex;gap:4px}
+.cat-btn{height:44px;min-width:44px;padding:0 10px;border-radius:var(--r-sm);background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:5px;font-size:12px;font-weight:500;font-family:var(--font);color:var(--accent)}
+.cat-btn.danger{color:var(--danger)}
+.cat-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.tag-settings-row{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--div);min-height:52px}
 .tag-settings-row:last-child{border-bottom:none}
 .tag-settings-name{font-size:14px;color:var(--t1)}
 .tag-actions{display:flex;gap:4px}
-.tag-action-btn{width:32px;height:32px;border-radius:50%;background:var(--elevated);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.tag-action-btn svg{width:14px;height:14px;stroke:var(--t2);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* FIX HIG: tag action buttons 44×44 */
+.tag-action-btn{width:44px;height:44px;border-radius:50%;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.tag-action-btn svg{width:16px;height:16px;stroke:var(--t2);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .tag-action-btn.del svg{stroke:var(--danger)}
+
+/* ── Modal ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);z-index:100;display:none;align-items:flex-end;justify-content:center}
 .modal-overlay.show{display:flex}
 .modal-sheet{background:var(--bg2);border-radius:var(--r-xl) var(--r-xl) 0 0;border-top:1px solid var(--div);padding:20px 20px calc(var(--safe-bot)+20px);width:100%;max-width:600px}
@@ -137,6 +179,8 @@ textarea.text-input{resize:none;height:100px;line-height:1.55}
 .modal-btns{display:flex;gap:10px}
 .modal-btn-cancel{flex:1;padding:14px;background:var(--elevated);border:none;border-radius:var(--r);font-size:15px;font-weight:500;color:var(--t2);font-family:var(--font);cursor:pointer}
 .modal-btn-ok{flex:2;padding:14px;background:var(--accent);border:none;border-radius:var(--r);font-size:15px;font-weight:600;color:var(--bg);font-family:var(--font);cursor:pointer}
+
+/* ── Confirm dialog ── */
 #confirmDialog{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
 #confirmDialog.show{display:flex}
 .confirm-box{background:var(--card);border-radius:var(--r-xl);padding:26px;width:100%;max-width:300px;border:1px solid var(--div)}
@@ -145,39 +189,60 @@ textarea.text-input{resize:none;height:100px;line-height:1.55}
 .confirm-btns{display:flex;gap:10px}
 .confirm-cancel{flex:1;padding:13px;background:var(--elevated);border:none;border-radius:var(--r);font-size:15px;font-weight:500;color:var(--t2);font-family:var(--font);cursor:pointer}
 .confirm-ok{flex:1;padding:13px;background:var(--danger);border:none;border-radius:var(--r);font-size:15px;font-weight:600;color:#fff;font-family:var(--font);cursor:pointer}
+
+/* ── Toast (replaces alert()) ── */
+#toast{
+  position:fixed;bottom:calc(var(--safe-bot) + 90px);left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--elevated);border:1px solid var(--div);border-radius:20px;
+  padding:10px 20px;font-size:14px;font-weight:500;color:var(--t1);
+  opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;
+  white-space:nowrap;z-index:300;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.error{background:var(--danger-bg);border-color:rgba(212,97,78,.3);color:var(--danger)}
+
+/* ── Onboarding tip ── */
+.onboarding{background:var(--card);border:1px solid var(--div);border-radius:var(--r-lg);padding:16px 18px;margin:16px;display:flex;gap:12px;align-items:flex-start}
+.onboarding-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.onboarding-text{font-size:13px;color:var(--t2);line-height:1.55}
+.onboarding-close{background:none;border:none;color:var(--t3);font-size:18px;cursor:pointer;padding:0 0 0 8px;flex-shrink:0;line-height:1}
+
 ::-webkit-scrollbar{display:none}
 .ceramic-icon{opacity:.3}
 </style>
 </head>
 <body>
 
+<!-- SCREEN 1: OVERVIEW -->
 <div id="screenOverview" class="screen active">
   <div class="nav-bar">
     <span class="nav-title">ceramics</span>
-    <button class="nav-icon-btn" onclick="goSettings()">
+    <button class="nav-icon-btn" onclick="goSettings()" aria-label="Settings">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </button>
   </div>
   <div class="filter-wrap" id="filterWrap"></div>
   <div class="scroll-body"><div class="photo-grid" id="photoGrid"></div></div>
-  <button class="fab" onclick="goAdd()">
+  <button class="fab" onclick="goAdd()" aria-label="Add piece">
     <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
   </button>
 </div>
 
+<!-- SCREEN 2: DETAIL -->
 <div id="screenDetail" class="screen">
   <div class="detail-hero" id="detailHero">
     <div class="hero-actions">
-      <button class="hero-btn" onclick="goBack()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-      <button class="hero-btn" onclick="goEdit()"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+      <button class="hero-btn" onclick="goBack()" aria-label="Back"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <button class="hero-btn" onclick="goEdit()" aria-label="Edit"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
     </div>
   </div>
   <div class="detail-body" id="detailBody"></div>
 </div>
 
+<!-- SCREEN 3: FORM -->
 <div id="screenForm" class="screen">
   <div class="nav-bar">
-    <button class="nav-btn" onclick="goBack()">Cancel</button>
+    <button class="nav-btn" onclick="cancelForm()">Cancel</button>
     <span class="nav-title" id="formTitle">New piece</span>
     <div style="min-width:60px"></div>
   </div>
@@ -185,6 +250,7 @@ textarea.text-input{resize:none;height:100px;line-height:1.55}
   <div class="form-footer"><button class="save-btn" onclick="saveWork()">Save</button></div>
 </div>
 
+<!-- SCREEN 4: SETTINGS -->
 <div id="screenSettings" class="screen">
   <div class="nav-bar">
     <button class="nav-btn" onclick="goBack()">
@@ -197,6 +263,7 @@ textarea.text-input{resize:none;height:100px;line-height:1.55}
   <div class="scroll-body" id="settingsBody"></div>
 </div>
 
+<!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
@@ -209,6 +276,7 @@ textarea.text-input{resize:none;height:100px;line-height:1.55}
   </div>
 </div>
 
+<!-- CONFIRM -->
 <div id="confirmDialog">
   <div class="confirm-box">
     <div class="confirm-title" id="confirmTitle">Delete?</div>
@@ -220,9 +288,14 @@ textarea.text-input{resize:none;height:100px;line-height:1.55}
   </div>
 </div>
 
+<!-- TOAST (replaces alert) -->
+<div id="toast"></div>
+
 <script>
+// ── Data ────────────────────────────────────────────
 const STORAGE_KEY='ceramics_v1';
 const TAGS_KEY='ceramics_tags_v1';
+const OB_KEY='ceramics_ob_v1';
 const DEFAULT_CATEGORIES=[
   {id:'type',  name:'Type',   tags:['plate','bowl','cup','mug','dish','vase','pot','candleholder']},
   {id:'clay',  name:'Clay',   tags:['stoneware','porcelain','terracotta','raku','chamotte']},
@@ -231,26 +304,128 @@ const DEFAULT_CATEGORIES=[
   {id:'firing',name:'Firing', tags:['bisque','glaze fire','raku fire']},
 ];
 let works=[],categories=[],currentWorkId=null,activeFilter='all',modalCb=null;
+let formDirty=false;
 
 function loadData(){
   try{works=JSON.parse(localStorage.getItem(STORAGE_KEY))||[];}catch(e){works=[];}
   try{categories=JSON.parse(localStorage.getItem(TAGS_KEY));if(!categories||!categories.length)throw 0;}
   catch(e){categories=DEFAULT_CATEGORIES.map(c=>({...c,tags:[...c.tags]}));}
 }
-function saveData(){localStorage.setItem(STORAGE_KEY,JSON.stringify(works));}
-function saveTags(){localStorage.setItem(TAGS_KEY,JSON.stringify(categories));}
+function saveData(){
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(works));}
+  catch(e){showToast('Storage full — export your data to free space','error');}
+}
+function saveTags(){
+  try{localStorage.setItem(TAGS_KEY,JSON.stringify(categories));}
+  catch(e){showToast('Could not save tags','error');}
+}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 function allTags(w){const t=[];categories.forEach(c=>{(w.tags||{})[c.id]&&t.push(...(w.tags[c.id]||[]));});return t;}
 function formatDate(ts){return new Date(ts).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});}
 
-let screenStack=['screenOverview'];
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
-function goBack(){screenStack.pop();const p=screenStack[screenStack.length-1]||'screenOverview';showScreen(p);if(p==='screenOverview')renderGrid();if(p==='screenSettings')renderSettings();}
-function goSettings(){screenStack.push('screenSettings');renderSettings();showScreen('screenSettings');}
-function goDetail(id){currentWorkId=id;screenStack.push('screenDetail');renderDetail(id);showScreen('screenDetail');}
-function goEdit(){screenStack.push('screenForm');renderForm(currentWorkId);showScreen('screenForm');}
-function goAdd(){currentWorkId=null;screenStack.push('screenForm');renderForm(null);showScreen('screenForm');}
+// ── Toast (replaces all alert() calls) ──────────────
+let toastTimer=null;
+function showToast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='show'+(type?' '+type:'');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.className='',2800);
+}
 
+// ── Navigation with slide transitions ───────────────
+let screenStack=['screenOverview'];
+
+function showScreen(id,direction='forward'){
+  const screens=document.querySelectorAll('.screen');
+  screens.forEach(s=>{
+    if(s.id===id){
+      s.classList.add('active');
+      s.classList.remove('prev');
+    } else if(s.classList.contains('active')){
+      if(direction==='back'){
+        s.classList.remove('active','prev');
+        s.style.transform='translateX(100%)';
+        setTimeout(()=>s.style.transform='',300);
+      } else {
+        s.classList.add('prev');
+        s.classList.remove('active');
+      }
+    } else {
+      s.classList.remove('active','prev');
+    }
+  });
+}
+
+function goBack(){
+  if(screenStack.length<=1)return;
+  screenStack.pop();
+  const prev=screenStack[screenStack.length-1];
+  showScreen(prev,'back');
+  if(prev==='screenOverview')renderGrid();
+  if(prev==='screenSettings')renderSettings();
+}
+function goSettings(){
+  screenStack.push('screenSettings');
+  renderSettings();
+  showScreen('screenSettings');
+}
+function goDetail(id){
+  currentWorkId=id;
+  screenStack.push('screenDetail');
+  renderDetail(id);
+  showScreen('screenDetail');
+}
+function goEdit(){
+  screenStack.push('screenForm');
+  renderForm(currentWorkId);
+  showScreen('screenForm');
+}
+function goAdd(){
+  currentWorkId=null;
+  screenStack.push('screenForm');
+  renderForm(null);
+  showScreen('screenForm');
+}
+
+// FIX H3: Cancel warns if form has unsaved data
+function cancelForm(){
+  if(formDirty){
+    showConfirm('Discard changes?','Your unsaved changes will be lost.',()=>{
+      formDirty=false;
+      goBack();
+    },'Discard');
+  } else {
+    goBack();
+  }
+}
+
+// FIX HIG: swipe-to-go-back from left edge
+(function(){
+  let startX=0,startY=0,swiping=false;
+  document.addEventListener('touchstart',e=>{
+    startX=e.touches[0].clientX;
+    startY=e.touches[0].clientY;
+    swiping=startX<32;
+  },{passive:true});
+  document.addEventListener('touchend',e=>{
+    if(!swiping)return;
+    const dx=e.changedTouches[0].clientX-startX;
+    const dy=Math.abs(e.changedTouches[0].clientY-startY);
+    if(dx>60&&dy<60&&screenStack.length>1){
+      const active=document.querySelector('.screen.active');
+      // Don't swipe-back if a modal is open
+      if(document.getElementById('modalOverlay').classList.contains('show'))return;
+      if(document.getElementById('confirmDialog').classList.contains('show'))return;
+      // Check for dirty form
+      if(active&&active.id==='screenForm'&&formDirty){cancelForm();return;}
+      goBack();
+    }
+    swiping=false;
+  },{passive:true});
+})();
+
+// ── Overview / Grid ──────────────────────────────────
 function renderGrid(){
   const fw=document.getElementById('filterWrap');
   const usedTags=new Set();
@@ -265,8 +440,20 @@ function renderGrid(){
     c.onclick=()=>{activeFilter=val;renderGrid();};
     fw.appendChild(c);
   });
+
   const grid=document.getElementById('photoGrid');
   grid.innerHTML='';
+
+  // FIX H10: onboarding tip for first-time users
+  const obDismissed=localStorage.getItem(OB_KEY);
+  if(!works.length&&!obDismissed){
+    const ob=document.createElement('div');
+    ob.className='onboarding';
+    ob.innerHTML=`<div class="onboarding-icon">🏺</div><div class="onboarding-text">Tap <strong>+</strong> to add your first piece. Add a photo, select tags for type, clay, glaze and method, then save. Use the filter chips to search by tag. Manage your tag categories in <strong>Settings</strong>.</div><button class="onboarding-close" onclick="localStorage.setItem('${OB_KEY}','1');this.closest('.onboarding').remove()">×</button>`;
+    grid.appendChild(ob);
+    return;
+  }
+
   const filtered=activeFilter==='all'?works:works.filter(w=>allTags(w).includes(activeFilter));
   if(!filtered.length){
     const es=document.createElement('div');
@@ -279,23 +466,41 @@ function renderGrid(){
     tile.className='grid-tile';
     tile.innerHTML=w.photo
       ?`<img src="${w.photo}" loading="lazy" alt="${w.name||''}">`
-      :`<div class="tile-placeholder"><svg class="ceramic-icon" viewBox="0 0 48 48" width="40" height="40" fill="none" stroke="#C4956A" stroke-width="1.5" stroke-linecap="round"><ellipse cx="24" cy="36" rx="16" ry="6"/><path d="M8 36 Q8 16 24 12 Q40 16 40 36"/><path d="M14 28 Q24 24 34 28"/></svg></div>`;
+      :`<div class="tile-placeholder">${ceramicSVG(40)}</div>`;
     const tp=(w.tags&&w.tags.type)||[];
     const fp=(w.tags&&w.tags.firing)||[];
-    tile.innerHTML+=`<div class="tile-overlay"><div class="tile-name">${w.name||tp[0]||'—'}</div><div class="tile-sub">${fp[0]||''}</div></div>`;
+    tile.innerHTML+=`<div class="tile-overlay"><div class="tile-name">${w.name||tp[0]||'—'}</div>${fp[0]?`<div class="tile-sub">${fp[0]}</div>`:''}</div>`;
     tile.onclick=()=>goDetail(w.id);
     grid.appendChild(tile);
   });
 }
 
+function ceramicSVG(size){
+  return `<svg class="ceramic-icon" viewBox="0 0 48 48" width="${size}" height="${size}" fill="none" stroke="#C4956A" stroke-width="1.5" stroke-linecap="round"><ellipse cx="24" cy="36" rx="16" ry="6"/><path d="M8 36 Q8 16 24 12 Q40 16 40 36"/><path d="M14 28 Q24 24 34 28"/></svg>`;
+}
+
+// ── Detail ───────────────────────────────────────────
 function renderDetail(id){
   const w=works.find(x=>x.id===id);if(!w)return;
   const hero=document.getElementById('detailHero');
   hero.querySelectorAll('img,.tile-placeholder').forEach(e=>e.remove());
-  if(w.photo){const img=document.createElement('img');img.src=w.photo;img.alt=w.name||'';hero.insertBefore(img,hero.firstChild);}
-  else{const ph=document.createElement('div');ph.className='tile-placeholder';ph.style.cssText='width:100%;height:100%;min-height:300px;';ph.innerHTML=`<svg class="ceramic-icon" viewBox="0 0 48 48" width="64" height="64" fill="none" stroke="#C4956A" stroke-width="1.2" stroke-linecap="round"><ellipse cx="24" cy="36" rx="16" ry="6"/><path d="M8 36 Q8 16 24 12 Q40 16 40 36"/><path d="M14 28 Q24 24 34 28"/></svg>`;hero.insertBefore(ph,hero.firstChild);}
+  if(w.photo){
+    const img=document.createElement('img');img.src=w.photo;img.alt=w.name||'';
+    hero.insertBefore(img,hero.firstChild);
+  } else {
+    const ph=document.createElement('div');
+    ph.className='tile-placeholder';
+    ph.style.cssText='width:100%;height:100%;min-height:300px;';
+    ph.innerHTML=ceramicSVG(64);
+    hero.insertBefore(ph,hero.firstChild);
+  }
   let tagsHTML='';
-  categories.forEach(cat=>{(w.tags||{})[cat.id]&&w.tags[cat.id].forEach(t=>{tagsHTML+=`<span class="tag-pill">${t}</span>`;});});
+  // FIX: tag pills are tappable — jump to filtered overview
+  categories.forEach(cat=>{
+    (w.tags||{})[cat.id]&&w.tags[cat.id].forEach(t=>{
+      tagsHTML+=`<span class="tag-pill" onclick="filterFromDetail('${t}')">${t}</span>`;
+    });
+  });
   let fieldsHTML='';
   if(w.width)fieldsHTML+=`<div class="field-item"><div class="field-key">Width / ø</div><div class="field-val">${w.width} cm</div></div>`;
   if(w.height)fieldsHTML+=`<div class="field-item"><div class="field-key">Height</div><div class="field-val">${w.height} cm</div></div>`;
@@ -309,19 +514,30 @@ function renderDetail(id){
     <button class="delete-btn" onclick="confirmDelete('${w.id}')">Delete this piece</button>`;
 }
 
+// FIX: tag pill → filter in overview
+function filterFromDetail(tag){
+  activeFilter=tag;
+  screenStack=['screenOverview'];
+  renderGrid();
+  showScreen('screenOverview','back');
+}
+
+// ── Form ─────────────────────────────────────────────
 let formPhoto=null;
+
 function renderForm(id){
   const w=id?works.find(x=>x.id===id):null;
   document.getElementById('formTitle').textContent=w?'Edit piece':'New piece';
   formPhoto=w?(w.photo||null):null;
+  formDirty=false;
   let tagSections='';
   categories.forEach(cat=>{
     const sel=(w&&w.tags&&w.tags[cat.id])||[];
-    const opts=cat.tags.map(t=>`<span class="tag-opt${sel.includes(t)?' selected':''}" data-cat="${cat.id}" data-tag="${t}" onclick="this.classList.toggle('selected')">${t}</span>`).join('');
+    const opts=cat.tags.map(t=>`<span class="tag-opt${sel.includes(t)?' selected':''}" data-cat="${cat.id}" data-tag="${t}" onclick="this.classList.toggle('selected');markDirty()">${t}</span>`).join('');
     tagSections+=`<div class="form-section"><div class="form-label">${cat.name}</div><div class="tag-selector" id="tagSel_${cat.id}">${opts}<button class="add-tag-inline" onclick="addTagInline('${cat.id}')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>new</button></div></div>`;
   });
   document.getElementById('formBody').innerHTML=`
-    <div class="form-section"><div class="form-label">Name</div><input class="text-input" id="fName" placeholder="e.g. large bowl, blue vase…" value="${w?w.name||'':''}"></div>
+    <div class="form-section"><div class="form-label">Name</div><input class="text-input" id="fName" placeholder="e.g. large bowl, blue vase…" value="${w?escHtml(w.name)||'':''}" oninput="markDirty()"></div>
     <div class="form-section"><div class="form-label">Photo</div>
       <div class="photo-upload" id="photoUpload">
         ${formPhoto?`<img src="${formPhoto}">`:'<svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#6B5E52" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>'}
@@ -329,17 +545,36 @@ function renderForm(id){
         <div class="photo-btns" onclick="event.stopPropagation()">
           <button class="photo-btn" onclick="openCamera()">Camera</button>
           <button class="photo-btn" onclick="openLibrary()">Library</button>
+          ${formPhoto?`<button class="remove-photo-btn" onclick="removePhoto()">Remove</button>`:''}
         </div>
       </div>
     </div>
     ${tagSections}
-    <div class="form-section"><div class="form-label">Dimensions</div><div class="input-row"><input class="text-input" id="fWidth" type="number" placeholder="Width / ø cm" value="${w?w.width||'':''}"><input class="text-input" id="fHeight" type="number" placeholder="Height cm" value="${w?w.height||'':''}"></div></div>
-    <div class="form-section"><div class="form-label">Firing temperature (°C)</div><input class="text-input" id="fTemp" type="number" placeholder="e.g. 1240" value="${w?w.temp||'':''}"></div>
-    <div class="form-section"><div class="form-label">Notes</div><textarea class="text-input" id="fNotes" placeholder="Glaze observations, tips for next time…">${w?w.notes||'':''}</textarea></div>`;
+    <div class="form-section"><div class="form-label">Dimensions</div><div class="input-row">
+      <input class="text-input" id="fWidth" type="number" min="0" placeholder="Width / ø cm" value="${w?w.width||'':''}" oninput="markDirty()">
+      <input class="text-input" id="fHeight" type="number" min="0" placeholder="Height cm" value="${w?w.height||'':''}" oninput="markDirty()">
+    </div></div>
+    <div class="form-section"><div class="form-label">Firing temperature (°C)</div>
+      <input class="text-input" id="fTemp" type="number" min="0" max="1400" placeholder="e.g. 1240" value="${w?w.temp||'':''}" oninput="markDirty()">
+    </div>
+    <div class="form-section"><div class="form-label">Notes</div>
+      <textarea class="text-input" id="fNotes" placeholder="Glaze observations, tips for next time…" oninput="markDirty()">${w?escHtml(w.notes)||'':''}</textarea>
+    </div>`;
+}
+
+function escHtml(s){return s?s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
+function markDirty(){formDirty=true;}
+
+// FIX H3: remove photo option
+function removePhoto(){
+  formPhoto=null;
+  formDirty=true;
+  renderForm(currentWorkId);
 }
 
 function addTagInline(catId){
   openModal('New tag','Tag name…',null,val=>{
+    val=val.trim();
     if(!val)return;
     const cat=categories.find(c=>c.id===catId);
     if(!cat||cat.tags.includes(val))return;
@@ -347,6 +582,7 @@ function addTagInline(catId){
     const state=gatherFormTags();
     renderForm(currentWorkId);
     setTimeout(()=>restoreFormTags(state,catId,val),50);
+    formDirty=true;
   });
 }
 function gatherFormTags(){
@@ -362,33 +598,33 @@ function restoreFormTags(state,newCat,newTag){
   });
 }
 function openCamera(){
-  const i=document.createElement('input');
-  i.type='file';i.accept='image/*';i.setAttribute('capture','environment');
+  const i=document.createElement('input');i.type='file';i.accept='image/*';i.setAttribute('capture','environment');
   i.style.display='none';document.body.appendChild(i);
-  i.onchange=()=>{handlePhoto(i);document.body.removeChild(i);};
-  i.click();
+  i.onchange=()=>{handlePhoto(i);document.body.removeChild(i);};i.click();
 }
 function openLibrary(){
-  const i=document.createElement('input');
-  i.type='file';i.accept='image/*';
+  const i=document.createElement('input');i.type='file';i.accept='image/*';
   i.style.display='none';document.body.appendChild(i);
-  i.onchange=()=>{handlePhoto(i);document.body.removeChild(i);};
-  i.click();
+  i.onchange=()=>{handlePhoto(i);document.body.removeChild(i);};i.click();
 }
 function handlePhoto(input){
   const file=input.files[0];if(!file)return;
   const reader=new FileReader();
   reader.onload=e=>{
     formPhoto=e.target.result;
+    formDirty=true;
     const pu=document.getElementById('photoUpload');
     pu.innerHTML=`<img src="${formPhoto}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:var(--r-lg);">
       <div class="photo-btns" onclick="event.stopPropagation()" style="position:relative;z-index:1;margin-top:8px">
         <button class="photo-btn" onclick="openCamera()">Camera</button>
         <button class="photo-btn" onclick="openLibrary()">Library</button>
+        <button class="remove-photo-btn" onclick="removePhoto()">Remove</button>
       </div>`;
   };
   reader.readAsDataURL(file);
 }
+
+// FIX H1+H5: save confirmation toast + basic validation
 function saveWork(){
   const name=document.getElementById('fName').value.trim();
   const width=document.getElementById('fWidth').value;
@@ -396,68 +632,225 @@ function saveWork(){
   const temp=document.getElementById('fTemp').value;
   const notes=document.getElementById('fNotes').value.trim();
   const tags=gatherFormTags();
-  if(currentWorkId){const w=works.find(x=>x.id===currentWorkId);if(w){w.name=name;w.photo=formPhoto;w.width=width;w.height=height;w.temp=temp;w.notes=notes;w.tags=tags;}}
-  else{works.push({id:uid(),name,photo:formPhoto,width,height,temp,notes,tags,created:Date.now()});}
-  saveData();screenStack.pop();
-  if(currentWorkId){renderDetail(currentWorkId);showScreen('screenDetail');}
-  else{renderGrid();showScreen('screenOverview');}
-}
-function confirmDelete(id){
-  const w=works.find(x=>x.id===id);
-  showConfirm(`Delete "${w?w.name||'this piece':''}"?`,'This cannot be undone.',()=>{
-    works=works.filter(x=>x.id!==id);saveData();screenStack=['screenOverview'];renderGrid();showScreen('screenOverview');
-  });
+
+  // Validation: must have at least name OR photo
+  if(!name&&!formPhoto){
+    showToast('Add a name or photo to save','error');
+    return;
+  }
+  // Validate numeric ranges
+  if(temp&&(isNaN(temp)||Number(temp)<0||Number(temp)>1400)){
+    showToast('Temperature should be between 0–1400°C','error');
+    return;
+  }
+
+  if(currentWorkId){
+    const w=works.find(x=>x.id===currentWorkId);
+    if(w){w.name=name;w.photo=formPhoto;w.width=width;w.height=height;w.temp=temp;w.notes=notes;w.tags=tags;}
+  } else {
+    works.push({id:uid(),name,photo:formPhoto,width,height,temp,notes,tags,created:Date.now()});
+  }
+  saveData();
+  formDirty=false;
+
+  // FIX H1: haptic + toast confirmation
+  if(navigator.vibrate)navigator.vibrate(10);
+  showToast(currentWorkId?'Changes saved':'Piece added');
+
+  screenStack.pop();
+  if(currentWorkId){renderDetail(currentWorkId);showScreen('screenDetail','back');}
+  else{renderGrid();showScreen('screenOverview','back');}
 }
 
+function confirmDelete(id){
+  const w=works.find(x=>x.id===id);
+  showConfirm(
+    `Delete "${w?w.name||'this piece':''}"?`,
+    'This cannot be undone.',
+    ()=>{
+      if(navigator.vibrate)navigator.vibrate([10,40,10]);
+      works=works.filter(x=>x.id!==id);saveData();
+      screenStack=['screenOverview'];
+      renderGrid();showScreen('screenOverview','back');
+      showToast('Piece deleted');
+    }
+  );
+}
+
+// ── Settings ─────────────────────────────────────────
 function renderSettings(){
   const body=document.getElementById('settingsBody');
   let catsHTML='';
   categories.forEach(cat=>{
+    // FIX H4+HIG: labeled buttons, 44px touch targets, delete separated
     const tagsHTML=cat.tags.map(t=>`
       <div class="tag-settings-row">
         <span class="tag-settings-name">${t}</span>
         <div class="tag-actions">
-          <button class="tag-action-btn" onclick="renameTag('${cat.id}','${t}')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-          <button class="tag-action-btn del" onclick="deleteTag('${cat.id}','${t}')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>
+          <button class="tag-action-btn" onclick="renameTag('${cat.id}','${t}')" aria-label="Rename ${t}">
+            <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="tag-action-btn del" onclick="deleteTag('${cat.id}','${t}')" aria-label="Delete ${t}">
+            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+          </button>
         </div>
       </div>`).join('');
-    catsHTML+=`<div class="settings-card" style="margin-bottom:16px"><div class="cat-header"><span class="cat-header-name">${cat.name}</span><div style="display:flex;gap:2px"><button class="icon-btn-sm" onclick="addTagToCategory('${cat.id}')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button><button class="icon-btn-sm" onclick="renameCategory('${cat.id}')"><svg viewBox="0 0 24 24" stroke="var(--t3)"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="icon-btn-sm" onclick="deleteCategory('${cat.id}')"><svg viewBox="0 0 24 24" stroke="var(--danger)"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>${tagsHTML}</div>`;
+    catsHTML+=`
+      <div class="settings-card" style="margin-bottom:16px">
+        <div class="cat-header">
+          <span class="cat-header-name">${cat.name}</span>
+          <div class="cat-btn-group">
+            <button class="cat-btn" onclick="addTagToCategory('${cat.id}')">
+              <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add
+            </button>
+            <button class="cat-btn" onclick="renameCategory('${cat.id}')">
+              <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Rename
+            </button>
+            <button class="cat-btn danger" onclick="deleteCategory('${cat.id}')">
+              <svg viewBox="0 0 24 24" stroke="var(--danger)"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Delete
+            </button>
+          </div>
+        </div>
+        ${tagsHTML}
+      </div>`;
   });
   const n=works.length;
   body.innerHTML=`<div class="settings-section">
     <div class="section-label" style="margin-bottom:14px">Categories & tags</div>
     ${catsHTML}
-    <button class="add-tag-inline" style="margin-bottom:28px;border-radius:var(--r);padding:14px 16px;width:100%;justify-content:center;font-size:14px" onclick="addCategory()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New category</button>
+    <button class="add-tag-inline" style="margin-bottom:28px;border-radius:var(--r);padding:14px 16px;width:100%;justify-content:center;font-size:14px" onclick="addCategory()">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New category
+    </button>
     <div class="section-label" style="margin-bottom:14px">Data</div>
     <div class="settings-card">
-      <div class="settings-row" onclick="exportData()"><div class="settings-row-left"><div class="settings-row-title">Export data</div><div class="settings-row-sub">${n} piece${n!==1?'s':''} as JSON</div></div><div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div></div>
-      <div class="settings-row" onclick="importData()"><div class="settings-row-left"><div class="settings-row-title">Import data</div><div class="settings-row-sub">Restore from JSON file</div></div><div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div></div>
+      <div class="settings-row" onclick="exportData()">
+        <div class="settings-row-left"><div class="settings-row-title">Export data</div><div class="settings-row-sub">${n} piece${n!==1?'s':''} as JSON</div></div>
+        <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+      </div>
+      <div class="settings-row" onclick="importData()">
+        <div class="settings-row-left"><div class="settings-row-title">Import data</div><div class="settings-row-sub">Restore from JSON file</div></div>
+        <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+      </div>
     </div>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(this)">
   </div>`;
 }
 
-function addTagToCategory(catId){openModal('Add tag','Tag name…',null,val=>{if(!val)return;const cat=categories.find(c=>c.id===catId);if(!cat||cat.tags.includes(val))return;cat.tags.push(val);saveTags();renderSettings();});}
-function renameTag(catId,old){openModal('Rename tag','New name…',old,val=>{if(!val||val===old)return;const cat=categories.find(c=>c.id===catId);if(!cat)return;const i=cat.tags.indexOf(old);if(i>-1)cat.tags[i]=val;works.forEach(w=>{if(w.tags&&w.tags[catId]){const ti=w.tags[catId].indexOf(old);if(ti>-1)w.tags[catId][ti]=val;}});saveTags();saveData();renderSettings();});}
-function deleteTag(catId,tag){showConfirm(`Delete tag "${tag}"?`,'Removed from all pieces.',()=>{const cat=categories.find(c=>c.id===catId);if(!cat)return;cat.tags=cat.tags.filter(t=>t!==tag);works.forEach(w=>{if(w.tags&&w.tags[catId])w.tags[catId]=w.tags[catId].filter(t=>t!==tag);});saveTags();saveData();renderSettings();});}
-function addCategory(){openModal('New category','Name (e.g. "Series", "Location")…',null,val=>{if(!val)return;categories.push({id:val.toLowerCase().replace(/\s+/g,'_')+uid().slice(0,4),name:val,tags:[]});saveTags();renderSettings();});}
-function renameCategory(catId){const cat=categories.find(c=>c.id===catId);openModal('Rename category','New name…',cat?cat.name:'',val=>{if(!val)return;if(cat)cat.name=val;saveTags();renderSettings();});}
-function deleteCategory(catId){const cat=categories.find(c=>c.id===catId);showConfirm(`Delete "${cat?cat.name:''}"?`,'All tags in this category will be removed.',()=>{categories=categories.filter(c=>c.id!==catId);works.forEach(w=>{if(w.tags)delete w.tags[catId];});saveTags();saveData();renderSettings();});}
+function addTagToCategory(catId){
+  openModal('Add tag','Tag name…',null,val=>{
+    val=val.trim();if(!val)return;
+    const cat=categories.find(c=>c.id===catId);
+    if(!cat||cat.tags.includes(val))return;
+    cat.tags.push(val);saveTags();renderSettings();
+  });
+}
+function renameTag(catId,old){
+  openModal('Rename tag','New name…',old,val=>{
+    val=val.trim();if(!val||val===old)return;
+    const cat=categories.find(c=>c.id===catId);if(!cat)return;
+    const i=cat.tags.indexOf(old);if(i>-1)cat.tags[i]=val;
+    works.forEach(w=>{if(w.tags&&w.tags[catId]){const ti=w.tags[catId].indexOf(old);if(ti>-1)w.tags[catId][ti]=val;}});
+    saveTags();saveData();renderSettings();
+  },'Save');
+}
+function deleteTag(catId,tag){
+  showConfirm(`Delete tag "${tag}"?`,'Removed from all pieces.',()=>{
+    const cat=categories.find(c=>c.id===catId);if(!cat)return;
+    cat.tags=cat.tags.filter(t=>t!==tag);
+    works.forEach(w=>{if(w.tags&&w.tags[catId])w.tags[catId]=w.tags[catId].filter(t=>t!==tag);});
+    saveTags();saveData();renderSettings();
+    showToast(`Tag "${tag}" deleted`);
+  });
+}
+function addCategory(){
+  openModal('New category','Name (e.g. "Series", "Location")…',null,val=>{
+    val=val.trim();if(!val)return;
+    const id=val.toLowerCase().replace(/\s+/g,'_')+uid().slice(0,4);
+    categories.push({id,name:val,tags:[]});saveTags();renderSettings();
+  });
+}
+function renameCategory(catId){
+  const cat=categories.find(c=>c.id===catId);
+  openModal('Rename category','New name…',cat?cat.name:'',val=>{
+    val=val.trim();if(!val)return;
+    if(cat)cat.name=val;saveTags();renderSettings();
+  },'Save');
+}
+function deleteCategory(catId){
+  const cat=categories.find(c=>c.id===catId);
+  showConfirm(`Delete category "${cat?cat.name:''}"?`,'All tags in this category will be removed.',()=>{
+    categories=categories.filter(c=>c.id!==catId);
+    works.forEach(w=>{if(w.tags)delete w.tags[catId];});
+    saveTags();saveData();renderSettings();
+    showToast('Category deleted');
+  });
+}
 
-function exportData(){const data={works,categories,exported:new Date().toISOString()};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`ceramics-backup-${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(url);}
+function exportData(){
+  const data={works,categories,exported:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`ceramics-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();URL.revokeObjectURL(url);
+  showToast('Export downloaded');
+}
 function importData(){document.getElementById('importFile').click();}
-function handleImport(input){const file=input.files[0];if(!file)return;const reader=new FileReader();reader.onload=e=>{try{const data=JSON.parse(e.target.result);if(data.works){works=data.works;saveData();}if(data.categories){categories=data.categories;saveTags();}renderSettings();renderGrid();alert(`Import successful: ${works.length} pieces loaded.`);}catch(err){alert('Import failed. Check the file.');}};reader.readAsText(file);}
+function handleImport(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(!data.works)throw new Error('Invalid file — no works found.');
+      works=data.works;saveData();
+      if(data.categories){categories=data.categories;saveTags();}
+      renderSettings();renderGrid();
+      // FIX H9: toast instead of alert
+      showToast(`Imported ${works.length} piece${works.length!==1?'s':''}`);
+    } catch(err){
+      showToast(err.message||'Import failed — check the file','error');
+    }
+  };
+  reader.readAsText(file);
+  input.value='';
+}
 
-function openModal(title,ph,pre,cb){modalCb=cb;document.getElementById('modalTitle').textContent=title;const inp=document.getElementById('modalInput');inp.placeholder=ph;inp.value=pre||'';document.getElementById('modalOverlay').classList.add('show');setTimeout(()=>inp.focus(),100);}
+// ── Modal ────────────────────────────────────────────
+function openModal(title,ph,pre,cb,okLabel='Add'){
+  modalCb=cb;
+  document.getElementById('modalTitle').textContent=title;
+  const inp=document.getElementById('modalInput');
+  inp.placeholder=ph;inp.value=pre||'';
+  document.querySelector('.modal-btn-ok').textContent=okLabel;
+  document.getElementById('modalOverlay').classList.add('show');
+  setTimeout(()=>inp.focus(),100);
+}
 function closeModal(e){if(e.target===document.getElementById('modalOverlay'))closeModalDirect();}
 function closeModalDirect(){document.getElementById('modalOverlay').classList.remove('show');modalCb=null;}
-window.confirmModal=function(){const val=document.getElementById('modalInput').value.trim();const cb=modalCb;closeModalDirect();if(cb)cb(val);};
+window.confirmModal=function(){
+  const val=document.getElementById('modalInput').value.trim();
+  const cb=modalCb;closeModalDirect();if(cb)cb(val);
+};
 
-function showConfirm(title,sub,cb){document.getElementById('confirmTitle').textContent=title;document.getElementById('confirmSub').textContent=sub;document.getElementById('confirmOkBtn').onclick=()=>{closeConfirm();cb();};document.getElementById('confirmDialog').classList.add('show');}
+// ── Confirm dialog ───────────────────────────────────
+// FIX: added okLabel param so "Discard" vs "Delete" can differ
+function showConfirm(title,sub,cb,okLabel='Delete'){
+  document.getElementById('confirmTitle').textContent=title;
+  document.getElementById('confirmSub').textContent=sub;
+  const btn=document.getElementById('confirmOkBtn');
+  btn.textContent=okLabel;
+  btn.onclick=()=>{closeConfirm();cb();};
+  document.getElementById('confirmDialog').classList.add('show');
+}
 function closeConfirm(){document.getElementById('confirmDialog').classList.remove('show');}
 
+// ── Init ─────────────────────────────────────────────
 loadData();
 renderGrid();
+
+// First screen starts visible (not slid in from right)
+document.getElementById('screenOverview').style.transform='translateX(0)';
 </script>
 </body>
 </html>
